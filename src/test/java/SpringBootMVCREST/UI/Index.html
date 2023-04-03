@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+function showEntityById(entity, id)
+{
+  var srcURL = "http://localhost:8080/" + entity + "/" + document.getElementById(id).value;
+  window.open(srcURL, "results");
+  return false;
+}
+
+/* Fetch Service ==================================== */
+ class FetchService {
+    constructor() {}
+
+    async performPostHttpRequest(fetchLink, headers, body) {
+        try {
+            const rawResponse = await fetch(fetchLink, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+            const content = await rawResponse.json();
+            return content;
+        }
+        catch(err) {
+            console.error(`Error at fetch POST: ${err}`);
+            throw err;
+        }
+    }
+
+    async performPutHttpRequest(fetchLink, headers, body) {
+        try {
+            const rawResponse = await fetch(fetchLink, {
+                method: "PUT",
+                headers: headers,
+                body: JSON.stringify(body)
+            });
+            const content = await rawResponse.json();
+            return content;
+        }
+        catch(err) {
+            console.error(`Error at fetch PUT: ${err}`);
+            throw err;
+        }
+    }
+}
+
+/*-- Objects --*/
+const fetchService = new FetchService();
+/*-- /Objects --*/
+
+/*--Functions--*/
+async function submitForm(e, form) {
+    e.preventDefault();
+    setTimeout(() => btnSubmit.disabled = false, 2000);
+    const jsonFormData = buildJsonFormData(form);
+    const headers = buildHeaders();
+    const response = await fetchService.performPostHttpRequest(`http://localhost:8080/people`, headers, jsonFormData);
+    console.log(response);
+
+    if (response)
+      alert ('All is good!!!');
+    else
+        alert(`An error occurred.`);
+}
+
+function buildHeaders(authorization = null) {
+    const headers = {
+        "Content-Type": "application/json",
+        "Authorization": (authorization) ? authorization : "Bearer TOKEN_MISSING"
+    };
+    return headers;
+}
+
+function buildJsonFormData(form) {
+    alert("buildJsonFormData");
+    const jsonFormData = { };
+    for(const pair of new FormData(form)) {
+        jsonFormData[pair[0]] = pair[1];
+    }
+    return jsonFormData;
+}
+/*--/Functions--*/
+
+
+function submitFormREST(form){
+    const jsonFormData = buildJsonFormData(form);
+    alert (JSON.stringify(body));
+    return false;
+}
+
+</script>
+<body>
+<h1>Tests</h1>
+<table width="100%" height="100%">
+    <tr>
+        <td width="50%" valign="top">
+            <h2> People </h2>
+            <form method="post" +___action="http://localhost:8080/people"
+                  name="newPersonForm"
+                  id="newPersonForm" target="results"
+                  ___onsubmit="return submitFormREST()">
+                Name: <input type="text" name="username" value="Johh"><br>
+                Age: <input type="text" name="age" value="43"><br>
+                <button type="submit" >Add Person</button>
+            </form>
+            <hr>
+            <ul>
+                <li><a href="http://localhost:8080/people" target="results"> Show all people</a></li>
+                <li><a target="results"
+                       href="#" onclick="showEntityById('people', 'personId'); return false;">Find a person by id</a>
+                    <input type="text" name="personId" id="personId" value=""></li>
+                            </ul>
+
+            <hr>
+            <h2>Books</h2>
+            <ul>
+                <li><a href="http://localhost:8080/books" target="results"> Show all books</a></li>
+                <li><a target="results"
+                       href="#" onclick="showEntityById('books', 'bookId'); return false;">Find a book by id</a>
+                    <input type="text" name="bookId" id="bookId" value=""></li>
+            </ul>
+        </td>
+
+
+        <td>
+            <iframe name="results" style="height:100vh; width:50vw;">
+            </iframe>
+        </td>
+    </tr>
+</table>
+</body>
+
+<script type="text/javascript">
+   document.getElementById("personId").value = 1+ Math.floor(Math.random()*5);
+   document.getElementById("bookId").value = 1+ Math.floor(Math.random()*6);
+
+   document.getElementById("newPersonForm").onsubmit = async (e) =>
+   {
+
+        alert("Form is submitted");
+        e.preventDefault();
+        const d = new FormData(e)
+        Console.log (d);
+
+   return false;
+/*
+    let response = await fetch('/people', {
+      method: 'POST',
+      content-type: 'application/json',
+      body: new FormData(newPersonFrom)
+    });
+
+    let result = await response.json();
+
+    alert(result.message);
+    */
+  };
+</script>
+</html>
