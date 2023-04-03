@@ -56,9 +56,9 @@ public class Logging {
             return joinPoint.proceed();
         } finally {
             stopWatch.stop();
-            String res = "Время выполнения: " + className + "." + methodName + " :: " + stopWatch.getTotalTimeMillis() + " ms";
+            String res = "Time for : " + className + "." + methodName + " :: " + stopWatch.getTotalTimeMillis() + " ms";
             log.info(res);
-            executionMap.add("Метод: " + methodName + " " + "из класса " + className + "." + " Время выполнения(мс)",
+            executionMap.add("Method: " + methodName + " " + "from class " + className + "." + " Time spent (ms)",
                     stopWatch.getTotalTimeMillis());
         }
     }
@@ -73,7 +73,7 @@ public class Logging {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         } finally {
-            log.warn("ВЫЗОВ DEPRECATED-МЕТОДА: " + className + "." +methodName);
+            log.warn("Deprecated-method: " + className + "." +methodName);
         }
     }
 }
